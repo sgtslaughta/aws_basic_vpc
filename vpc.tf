@@ -37,6 +37,10 @@ variable "private_subnet_cidr_blocks" {
   ]
 }
 
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+
 
 resource "aws_vpc" "dev_vpc" {
   cidr_block           = var.dev_vpc_cidr_block
