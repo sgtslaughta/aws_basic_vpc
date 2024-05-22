@@ -1,12 +1,7 @@
 variable "project_name" {
   description = "Name of the project"
   type        = string
-  default = "test"
-}
-
-variable "ec2_kp_pub_cert" {
-  description = "EC2 public key certificate"
-  type        = string
+  default     = "test"
 }
 
 variable "dev_vpc_cidr_block" {
