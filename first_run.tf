@@ -44,7 +44,7 @@ variable "MY_IP" {
   sensitive   = true
 }
 
-resource "aws_security_group" "dev_openvpn_sg" {
+resource "aws_security_group" "ubuntu_sg" {
   description = "Security group for OpenVPN servers"
   name        = "dev_openvpn_sg"
   vpc_id      = aws_vpc.dev_vpc.id
@@ -80,9 +80,10 @@ resource "aws_security_group" "dev_openvpn_sg" {
 resource "aws_instance" "ubuntu_vm" {
   ami           = data.aws_ami.amazon_linux_ec2_ami.id
   instance_type = var.instance_type
+  subnet_id     = aws_subnet.dev_public_subnet[0].id
   key_name      = aws_key_pair.deployer.key_name
   vpc_security_group_ids = [
-    aws_security_group.dev_openvpn_sg.id
+    aws_security_group.ubuntu_sg.id
   ]
 
   tags = {
