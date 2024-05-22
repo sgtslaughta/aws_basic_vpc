@@ -1,13 +1,47 @@
-# You can override the included template(s) by including variable overrides
-# SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
-# Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/pipeline/#customization
-# Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
-# Container Scanning customization: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
-# Note that environment variables can be set in several places
-# See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
-stages:
-- test
-sast:
-  stage: test
 include:
-- template: Security/SAST.gitlab-ci.yml
+  - template: Terraform/Base.latest.gitlab-ci.yml
+  - template: Jobs/SAST-IaC.latest.gitlab-ci.yml
+
+kics-iac-sast:
+  cache: []
+
+variables:
+  IGNORE_TF_DEPRECATION_WARNING: "true"
+
+stages:
+  - validate
+  - test
+  - build
+  - deploy
+  - cleanup
+
+fmt:
+  extends: .terraform:fmt
+
+validate:
+  extends: .terraform:validate
+
+build:
+  extends: .terraform:build
+  variables:
+    TF_VAR_MY_IP: ${GITLAB_MY_IP}
+
+deploy:
+  extends: .terraform:deploy
+  dependencies:
+    - build
+  environment:
+    name: $TF_STATE_NAME
+  rules:
+    - when: manual
+  allow_failure: true
+
+cleanup:
+  extends: .terraform:destroy
+  needs: ['deploy']
+  environment:
+    name: $TF_STATE_NAME
+  variables:
+    TF_VAR_MY_IP: ${GITLAB_MY_IP}
+  rules:
+    - when: manual
