@@ -35,7 +35,7 @@ variable "instance_type" {
 }
 
 variable "key_name" {
-  default = "csd_com" # Change to your key pair name
+  default = "key-048d16352d52cf988" # Change to your key pair name
 }
 
 # Create a new Ubuntu VM instance
