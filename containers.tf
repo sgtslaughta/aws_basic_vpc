@@ -1,7 +1,7 @@
 
 # Create a ECS cluster
 resource "aws_ecs_cluster" "ecs_cluster" {
-  name = "ecs_cluster"
+  name = "${var.project_shortname}_ecs_cluster"
 }
 
 # Create a ECS task definition
@@ -12,7 +12,7 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
 
 # Create a ECS service
 resource "aws_ecs_service" "ecs_service" {
-  name            = "ecs_service"
+  name            = "${var.project_shortname}_ecs_service"
   cluster         = aws_ecs_cluster.ecs_cluster.id
   task_definition = aws_ecs_task_definition.ecs_task_definition.arn
   desired_count   = 1

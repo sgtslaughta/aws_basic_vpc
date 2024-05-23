@@ -10,7 +10,7 @@ resource "aws_vpc" "dev_vpc" {
 
   tags = merge(
     var.additional_tags, {
-      Name = var.project_shortname + "_vpc"
+      Name = "${var.project_shortname}_vpc"
     },
   )
 }
@@ -20,7 +20,7 @@ resource "aws_internet_gateway" "dev_igw" {
 
   tags = merge(
     var.additional_tags, {
-      Name = var.project_shortname + "_igw"
+      Name = "${var.project_shortname}_igw"
     },
   )
 }
@@ -34,7 +34,7 @@ resource "aws_subnet" "dev_public_subnet" {
 
   tags = merge(
     var.additional_tags, {
-      Name = var.project_shorname + "pub_subnet_${count.index}"
+      Name = "${var.project_shortname}_pub_subnet_${count.index}"
     },
   )
 }
@@ -48,7 +48,7 @@ resource "aws_route_table" "dev_public_route" {
 
   tags = merge(
     var.additional_tags, {
-      Name = var.project_shortname + "_public_route"
+      Name = "${var.project_shortname}_public_route"
     },
   )
 }
@@ -69,7 +69,7 @@ resource "aws_subnet" "dev_private_subnet" {
 
   tags = merge(
     var.additional_tags, {
-      Name = var.project_shortname + "pub_subnet_${count.index}"
+      Name = "${var.project_shortname}_priv_subnet_${count.index}"
     },
   )
 }
@@ -79,7 +79,7 @@ resource "aws_route_table" "dev_private_route" {
 
   tags = merge(
     var.additional_tags, {
-      Name = var.project_shortname + "_priv_route"
+      Name = "${var.project_shortname}_priv_route"
     },
   )
 }
