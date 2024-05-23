@@ -1,49 +1,16 @@
-variable "project_name" {
-  description = "Name of the project"
-  type        = string
-  default     = "test"
-}
-
-variable "dev_vpc_cidr_block" {
-  description = "dev_vpc_cidr_block"
-  type        = string
-  default     = "10.0.0.0/16"
-}
-
-variable "public_subnet_cidr_blocks" {
-  description = "Available CIDR blocks for public subnets"
-  type        = list(string)
-  default = [
-    "10.0.1.0/24",
-    "10.0.2.0/24",
-    "10.0.3.0/24",
-    "10.0.4.0/24"
-  ]
-}
-
-variable "private_subnet_cidr_blocks" {
-  description = "Available CIDR blocks for private subnets"
-  type        = list(string)
-  default = [
-    "10.0.101.0/24",
-    "10.0.102.0/24",
-    "10.0.103.0/24",
-    "10.0.104.0/24"
-  ]
-}
 
 data "aws_availability_zones" "available" {
   state = "available"
 }
 
-
+## Create a VPC
 resource "aws_vpc" "dev_vpc" {
   cidr_block           = var.dev_vpc_cidr_block
   enable_dns_hostnames = true
 
   tags = merge(
     var.additional_tags, {
-      Name = "dev_vpc"
+      Name = var.project_shortname + "_vpc"
     },
   )
 }
@@ -53,11 +20,12 @@ resource "aws_internet_gateway" "dev_igw" {
 
   tags = merge(
     var.additional_tags, {
-      Name = "dev_igw"
+      Name = var.project_shortname + "_igw"
     },
   )
 }
 
+#### Create a public subnet
 resource "aws_subnet" "dev_public_subnet" {
   count             = 1
   vpc_id            = aws_vpc.dev_vpc.id
@@ -66,7 +34,7 @@ resource "aws_subnet" "dev_public_subnet" {
 
   tags = merge(
     var.additional_tags, {
-      Name = "dev_public_subnet_${count.index}"
+      Name = var.project_shorname + "pub_subnet_${count.index}"
     },
   )
 }
@@ -80,7 +48,7 @@ resource "aws_route_table" "dev_public_route" {
 
   tags = merge(
     var.additional_tags, {
-      Name = "dev_public_route"
+      Name = var.project_shortname + "_public_route"
     },
   )
 }
@@ -90,7 +58,9 @@ resource "aws_route_table_association" "dev_public_route_assoc" {
   route_table_id = aws_route_table.dev_public_route.id
   subnet_id      = aws_subnet.dev_public_subnet[count.index].id
 }
+#######################  End  ###############################
 
+#######################  Private subnet #####################
 resource "aws_subnet" "dev_private_subnet" {
   count             = 1
   vpc_id            = aws_vpc.dev_vpc.id
@@ -99,7 +69,7 @@ resource "aws_subnet" "dev_private_subnet" {
 
   tags = merge(
     var.additional_tags, {
-      Name = "dev_private_subnet_${count.index}"
+      Name = var.project_shortname + "pub_subnet_${count.index}"
     },
   )
 }
@@ -109,7 +79,7 @@ resource "aws_route_table" "dev_private_route" {
 
   tags = merge(
     var.additional_tags, {
-      Name = "dev_private_route"
+      Name = var.project_shortname + "_priv_route"
     },
   )
 }
@@ -119,3 +89,4 @@ resource "aws_route_table_association" "dev_private_route_assoc" {
   route_table_id = aws_route_table.dev_private_route.id
   subnet_id      = aws_subnet.dev_private_subnet[count.index].id
 }
+#######################  End  ###############################
