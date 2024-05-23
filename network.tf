@@ -1,6 +1,6 @@
 resource "aws_security_group" "ubuntu_sg" {
   description = "Security group for servers"
-  name        = "dev_openvpn_sg"
+  name        = "dev_sg"
   vpc_id      = aws_vpc.dev_vpc.id
 
   ingress {
@@ -25,7 +25,7 @@ resource "aws_security_group" "ubuntu_sg" {
 
   tags = merge(
     var.additional_tags, {
-      Name = "dev_sg"
+      Name = "${var.project_shortname}dev_sg"
     },
   )
 }
