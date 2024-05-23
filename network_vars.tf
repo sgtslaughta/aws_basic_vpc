@@ -19,10 +19,10 @@ variable "private_subnet_cidr_blocks" {
   description = "Available CIDR blocks for private subnets"
   type        = list(string)
   default = [
-    "10.10.10.0/24",
-    "10.10.20.0/24",
-    "10.10.30.0/24",
-    "10.10.40.0/24"
+    "10.0.10.0/24",
+    "10.0.20.0/24",
+    "10.0.30.0/24",
+    "10.0.40.0/24"
   ]
 }
 
