@@ -18,7 +18,7 @@ resource "aws_ecs_service" "ecs_service" {
   desired_count   = 1
 
   network_configuration {
-    subnets          = aws_subnet.dev_private_subnet[0].id
+    subnets          = aws_subnet.dev_private_subnet[*].id
     security_groups  = [aws_security_group.ubuntu_sg.id]
     assign_public_ip = true
   }
