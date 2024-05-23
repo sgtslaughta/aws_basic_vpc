@@ -43,7 +43,7 @@ variable "MY_IP" {
 resource "aws_instance" "ubuntu_vm" {
   ami           = data.aws_ami.amazon_linux_ec2_ami.id
   instance_type = var.instance_type
-  subnet_id     = concat(aws_subnet.dev_public_subnet.*.id, aws_subnet.dev_private_subnet.*.id)
+  subnet_id     = concat(aws_subnet.dev_public_subnet[0].id, aws_subnet.dev_private_subnet[0].id)
   key_name      = "csd_com"
   vpc_security_group_ids = [
     aws_security_group.ubuntu_sg.id
