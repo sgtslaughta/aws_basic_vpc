@@ -38,10 +38,6 @@ variable "MY_IP" {
   sensitive   = true
 }
 
-resource "aws_network_interface" "dev_public_subnet_nic" {
-  subnet_id = aws_subnet.dev_public_subnet[0].id
-}
-
 resource "aws_network_interface" "dev_private_subnet_nic" {
   subnet_id = aws_subnet.dev_private_subnet[0].id
 }
@@ -54,16 +50,11 @@ resource "aws_instance" "ubuntu_vm" {
   vpc_security_group_ids = [
     aws_security_group.ubuntu_sg.id
   ]
+  subnet_id               = aws_subnet.dev_public_subnet[0].id
 
   tags = {
     Name = "UbuntuVM"
   }
-}
-
-resource "aws_network_interface_attachment" "dev_public_subnet_nic_attach" {
-  instance_id          = aws_instance.ubuntu_vm.id
-  network_interface_id = aws_network_interface.dev_public_subnet_nic.id
-  device_index         = 0
 }
 
 resource "aws_network_interface_attachment" "dev_private_subnet_nic_attach" {
