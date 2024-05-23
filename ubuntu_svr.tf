@@ -1,24 +1,23 @@
-
 # Define the variables
 data "aws_ami" "amazon_linux_ec2_ami" {
   most_recent = true
 
   filter {
-    name = "name"
+    name   = "name"
     values = [
       "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"
     ]
   }
 
   filter {
-    name = "virtualization-type"
+    name   = "virtualization-type"
     values = [
       "hvm"
     ]
   }
 
   filter {
-    name = "architecture"
+    name   = "architecture"
     values = [
       "x86_64"
     ]
@@ -54,13 +53,13 @@ resource "aws_instance" "ubuntu_vm" {
   subnet_id     = aws_subnet.dev_public_subnet[0].id
   network_interface {
     device_index         = 0
-    network_interface_id = aws_network_interface.dev_public_subnet_nic[0].id
+    network_interface_id = aws_network_interface.dev_public_subnet_nic.id
   }
   network_interface {
     device_index         = 1
-    network_interface_id = aws_network_interface.dev_private_subnet_nic[0].id
+    network_interface_id = aws_network_interface.dev_private_subnet_nic.id
   }
-  key_name      = "csd_com"
+  key_name               = "csd_com"
   vpc_security_group_ids = [
     aws_security_group.ubuntu_sg.id
   ]
