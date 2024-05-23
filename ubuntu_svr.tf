@@ -39,20 +39,6 @@ variable "MY_IP" {
   sensitive   = true
 }
 
-resource "azurerm_network_interface" "nics" {
-  count             = length(var.public_subnet_cidr_blocks)
-  name              = "nic-${count.index}"
-  location          = azurerm_resource_group.group.location
-  resource_group_name = azurerm_resource_group.group.name
-
-  ip_configuration {
-    name            = "config-${count.index}"
-    subnet_id       = element(azurerm_subnet.subnets[*].id, count.index % 4)
-    private_ip_address_allocation = "Static"
-    private_ip_address = element(var.nics, count.index)
-  }
-}
-
 # Create a new Ubuntu VM instance
 resource "aws_instance" "ubuntu_vm" {
   ami           = data.aws_ami.amazon_linux_ec2_ami.id
