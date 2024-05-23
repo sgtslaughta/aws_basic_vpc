@@ -39,11 +39,27 @@ variable "MY_IP" {
   sensitive   = true
 }
 
+resource "aws_network_interface" "dev_public_subnet_nic" {
+  subnet_id = aws_subnet.dev_public_subnet[0].id
+}
+
+resource "aws_network_interface" "dev_private_subnet_nic" {
+  subnet_id = aws_subnet.dev_private_subnet[0].id
+}
+
 # Create a new Ubuntu VM instance
 resource "aws_instance" "ubuntu_vm" {
   ami           = data.aws_ami.amazon_linux_ec2_ami.id
   instance_type = var.instance_type
-  subnet_id     = tolist([aws_subnet.dev_public_subnet[0].id, aws_subnet.dev_private_subnet[0].id])
+  subnet_id     = aws_subnet.dev_public_subnet[0].id
+  network_interface {
+    device_index         = 0
+    network_interface_id = aws_network_interface.dev_public_subnet_nic[0].id
+  }
+  network_interface {
+    device_index         = 1
+    network_interface_id = aws_network_interface.dev_private_subnet_nic[0].id
+  }
   key_name      = "csd_com"
   vpc_security_group_ids = [
     aws_security_group.ubuntu_sg.id
